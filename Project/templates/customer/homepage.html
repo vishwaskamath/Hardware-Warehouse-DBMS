@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Home</title>
+</head>
+
+<body style="background-color: #212529; color: white;">
+    <div style="text-align: center; padding: 2%;">
+        <div class="container" style="padding: 1%;">
+            <div style="text-align: end;">
+                <button class="btn btn-danger btn-xs" onclick="location.href='/logout'">LOG OUT</button>
+            </div>
+            <h1>
+                WELCOME USER
+
+            </h1>
+            <br>
+
+            <h3>You are signed in as {{currentuser}} </h3>
+
+            <br>
+
+            {%with messages = get_flashed_messages() %}
+
+            {%if messages%}
+
+            {%for message in messages%}
+
+            <div class="alert alert-success alert-dismissable" role="alert">
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+
+                    <span aria-hidden="true">x</span>
+
+                </button>
+
+                {{message}}
+
+            </div>
+
+
+
+            {%endfor%}
+            {%endif%}
+            {%endwith%}
+
+            <h3>LIST OF ALL THE PRODUCTS</h3>
+            <br>
+            <hr style="background-color: aliceblue;">
+        </div>
+        <div>
+            {% for row in products %}
+            <div class="row">
+
+                <div class="col-md-6" style="text-align: justify; padding: 5%;">
+                    <h1> {{row.0}}</h1>
+                    <h3>{{row.1}}</h3>
+                    <P>
+                        {{row.2}}
+                    </P>
+                    <P> PRICE :
+                        ₹ {{row.3}}
+                    </P>
+                    <P> CATEGORY :
+                        {{row.6}}
+                    </P>
+                    <p>
+                        QUANTITY :
+                        <input type="number" step="1" aria-label="QUANTITY" min="1" max="999" id="quantity{{row.0}}"
+                            name="qty">
+                    </p>
+                    <button class="btn btn-outline-success btn-xs" data-toggle="modal"
+                        onclick="addtocart('{{row.0}}','{{row.1}}','{{row.2}}','{{row.3}}','')">ADD
+                        TO CART</button>
+
+                    <button class="btn btn-outline-danger btn-xs" data-toggle="modal"
+                        onclick="removeitem('{{row.0}}','{{row.1}}','{{row.2}}','{{row.3}}')">REMOVE
+                        ITEM</button>
+
+
+                </div>
+                <div class="col-md-6" style="padding: 5%;">
+                    <img src="../static/images/hardware1.jpg" style="width: 300px; ">
+                </div>
+            </div>
+            <hr style="background-color: aliceblue;">
+            {% endfor %}
+
+
+
+
+
+        </div>
+    </div>
+    <div style="text-align: center;" class="container">
+        <button class="btn btn-warning btn-xs" onclick="display()"> VIEW YOUR CART ITEMS</button>
+    </div>
+    <br>
+    <div style="text-align: center;" class="container">
+        <table class="table table-striped">
+            <tr>
+                <th>SERIAL NO.</th>
+                <th>PRODUCT NAME</th>
+                <th>DESCRIPTION</th>
+                <th>COST</th>
+                <th>QUANTITY</th>
+
+            </tr>
+            <tr>
+                <td id="id"> </td>
+                <td id="name"> </td>
+                <td id="desc"> </td>
+                <td id="cost"> </td>
+                <td id="quantity"> </td>
+
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div style="text-align: center;" class="container">
+
+        <button class="btn btn-lightbtn-xs" onclick="location.href='/addtocart/{{currentuser}}'" id="proceed">
+            CONFIRM ITEMS</button>
+        <button class="btn btn-light btn-xs" id="cartsubmit" name="cartsubmit"> PLACE ORDER </button>
+    </div>
+    <br>
+    <br>
+
+    </div>
+    <script>
+
+        $('#proceed').on("click", function () {
+            alert("Your items have been confirmed !");
+        });
+
+        $('#cartsubmit').on("click", function () {
+            alert("Your order has been placed ! ");
+        });
+
+
+
+        var cartid = [];
+        var cartname = [];
+        var cartdesc = [];
+        var cartcost = [];
+        var cartquantity = [];
+
+        function addtocart(id, name, desc, cost) {
+
+            var quantity = document.getElementById('quantity' + id).value;
+
+            if (cartid.indexOf(id) !== -1) {
+                itemIndex = cartid.indexOf(id);
+                cartquantity[itemIndex] = Number(cartquantity[itemIndex]) + Number(quantity);
+            }
+            else {
+                console.log(quantity);
+
+                cartid.push(id);
+                cartname.push(name);
+                cartdesc.push(desc);
+                cartcost.push(cost);
+                cartquantity.push(quantity);
+            }
+
+
+        }
+
+
+        function removeitem(id, name, desc, cost) {
+
+            cartid = cartid.filter(item => item !== id);
+            cartname = cartname.filter(item => item !== name);
+            cartdesc = cartdesc.filter(item => item !== desc);
+            cartcost = cartcost.filter(item => item !== cost);
+            var quantity = document.getElementById('quantity' + id).value;
+            console.log(quantity);
+            cartquantity = cartquantity.filter(item => item !== quantity);
+
+        }
+
+
+
+        function display() {
+
+            var cart_id = "";
+            var cart_name = "";
+            var cart_desc = "";
+            var cart_cost = "";
+            var cart_qty = "";
+            var i;
+            for (i = 0; i < cartid.length; i++) {
+
+                cart_id += cartid[i] + "<br>";
+
+            }
+
+            for (i = 0; i < cartname.length; i++) {
+
+                cart_name += cartname[i] + "<br>";
+
+            }
+
+            for (i = 0; i < cartdesc.length; i++) {
+
+                cart_desc += cartdesc[i] + "<br>";
+
+            }
+
+            for (i = 0; i < cartcost.length; i++) {
+
+                cart_cost += cartcost[i] + "<br>";
+
+            }
+
+            for (i = 0; i < cartquantity.length; i++) {
+
+                cart_qty += cartquantity[i] + "<br>"
+            }
+
+            document.getElementById("id").innerHTML = cart_id;
+            document.getElementById("name").innerHTML = cart_name;
+            document.getElementById("desc").innerHTML = cart_desc;
+            document.getElementById("cost").innerHTML = cart_cost;
+            document.getElementById("quantity").innerHTML = cart_qty;
+
+        }
+
+        document.getElementById('cartsubmit').addEventListener('click', event => {
+
+            fetch("/addtocart", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "cartid": cartid, "cartquantity": cartquantity, "cartcost": cartcost })
+            }).then(res => {
+                console.log("Request complete! response:", res);
+            });
+        });
+
+    </script>
+</body>
+
+</html>

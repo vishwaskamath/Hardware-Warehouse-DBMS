@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Status</title>
+</head>
+
+<body style="background-color: #212529; color: white;">
+
+    <div class="container" style="text-align: center;">
+        <div style="padding: 5%;">
+            <h1>VIEW STATUS</h1>
+            <br>
+            <h3>PAYMENT AND DELIVERY</h3>
+
+            <br>
+
+            <button type="button" class="btn btn-dark" onclick="location.href='adminpanel'">
+                ADMIN PANEL </button>
+            <br>
+        </div>
+    </div>
+
+    <div class="container">
+        <table class="table table-striped">
+            <tr>
+                <th>STATUS ID</th>
+                <th>ORDER NO.</th>
+
+                <th>DELIVERY STATUS</th>
+                <th>PAYMENT STATUS</th>
+                <th>ACTION</th>
+
+            </tr>
+
+
+            {% for row in viewstatus %}
+
+            <tr>
+                <td> {{row.0}} </td>
+                <td> {{row.1}} </td>
+                <td> {{row.2}} </td>
+                <td> {{row.3}} </td>
+                <td>
+                    <a href="/status/update/{{row.0}}" class="btn btn-warning btn-xs" data-toggle="modal"
+                        data-target="#statusmodaledit{{row.0}}">EDIT</a>
+
+                </td>
+
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+    </div>
+
+
+    {% for row in viewstatus %}
+
+    <div class="modal fade" id="statusmodaledit{{row.0}}" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="background-color: #212529;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">EDIT DATA</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+
+                    <form action="{{url_for('status_update')}}" method="POST">
+
+                        <center>
+                            <h4>UPDATE STATUS</h4><br>
+                            <input type="hidden" name="status_id" value="{{row.0}}">
+
+                            <label for="delivery">DELIVERY</label> <input type="text" name="del_status" id="del_status"
+                                value="{{row.2}}" /> <br>
+                            <label for="payment">PAYMENT</label> <input type="text" name="payment_status"
+                                id="payment_status" value="{{row.3}}" /> <br>
+                            <input type="submit">
+                        </center>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CLOSE</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+</body>
+
+</html>
